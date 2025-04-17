@@ -9,6 +9,10 @@ def clean_gemini_response(raw_response: str):
     steps = [step for step in steps if len(step) <= 30]
     return steps
 
+@app.route("/")
+def home():
+    return "Hello! Calculator backend is running 🧠⚡"
+
 @app.route("/solve", methods=["POST"])
 def solve():
     equation = request.json.get("equation", "")
