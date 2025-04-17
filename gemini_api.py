@@ -21,5 +21,6 @@ def get_gemini_response(prompt):
     if response.status_code == 200:
         return response.json()['candidates'][0]['content']['parts'][0]['text']
     else:
-        print("Error:", response.text)
-        return "Error contacting Gemini"
+        print("Gemini API Error:", response.status_code, response.text)
+return f"Error contacting Gemini: {response.text}"
+
