@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from gemini_api import get_gemini_response
 
@@ -29,5 +30,5 @@ Equation: {equation}
     return jsonify({"response": steps})
 
 if __name__ == "__main__":
-    app.run()
+    app.run()app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 
