@@ -7,7 +7,7 @@ load_dotenv()
 app = Flask(__name__)
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL = "mistralai/mixtral-8x7b-instruct"  # You can also try "anthropic/claude-3-haiku"
+MODEL = "anthropic/claude-3-haiku"  # You can also try "mistralai/mixtral-8x7b-instruct"
 
 @app.route("/")
 def index():
@@ -21,10 +21,10 @@ def solve_equation():
         
         prompt = prompt = f"""
 Solve the following equation step by step.
-Display only the working steps and the final answer.
-Do not explain anything or label the steps.
+Display all working steps and the final answer.
+answer should be like an answer script.
 Each step should be on a new line.
-Keep each step under 30 characters.
+Keep each step short.
 Equation: {eqn}
 """ 
 
