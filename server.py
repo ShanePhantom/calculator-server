@@ -13,13 +13,12 @@ MODEL = "google/gemini-pro"  # You can also try "mistralai/mixtral-8x7b-instruct
 def index():
     return "LLM Equation Solver API is Live!"
 
-@app.route("/solve", methods=["POST"])
+@app.route('/solve', methods=['POST'])
 def solve_equation():
-    try:
-        data = request.get_json()
-        eqn = data.get("equation", "")
-        
-        prompt = f"""
+    data = request.get_json()
+    user_equation = data.get('equation', '')
+
+    prompt = f"""
 You are a step-by-step math solver. Your task is to solve engineering-level math equations by showing only the working steps required to reach the final answer.
 
 - Do not include explanations or final answers.
@@ -27,32 +26,37 @@ You are a step-by-step math solver. Your task is to solve engineering-level math
 - Do not skip algebraic simplifications or rearrangements.
 - Do not include the word "Answer" or "= Final Result".
 - The format should look like a chalkboard or exam working.
-- Use LaTeX-like formatting for fractions, powers, and roots where needed, but keep it readable in plain text.
+- Use plain text with one step per line.
 
-Now solve: {eqn}
-""" 
+Now solve: {user_equation}
+"""
 
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": MODEL,
-                "messages": [
-                    {"role": "user", "content": prompt}
-                ]
-            }
-        )
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "HTTP-Referer": "https://calculator-server-upvx.onrender.com/solve",  # change as needed
+        "Content-Type": "application/json"
+    }
 
-        res_json = response.json()
-        answer = res_json["choices"][0]["message"]["content"]
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers,
+        json={
+            "model": "google/gemini-pro",
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    )
 
-        return jsonify({"steps": answer})
+    try:
+        raw_text = response.json()['choices'][0]['message']['content']
+        # Clean output: split by lines, remove empties & any final answer lines
+        lines = raw_text.strip().split('\n')
+        steps = [line.strip() for line in lines if line.strip() and "=" in line and not any(kw in line.lower() for kw in ['answer', 'final'])]
+
+        return jsonify({"steps": steps})
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)})
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
