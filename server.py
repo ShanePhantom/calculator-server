@@ -20,12 +20,7 @@ def solve_equation():
         eqn = data.get("equation", "")
         
         prompt = prompt = f"""
-Solve the following equation step by step.
-Display all working steps and the final answer.
-answer should be like an answer script.
-Each step should be on a new line.
-Keep each step short.
-Equation: {eqn}
+Solve the equation step by step and output only the working. Do not explain anything. Just show each step clearly and end with the value of the variable. {eqn}
 """ 
 
         response = requests.post(
