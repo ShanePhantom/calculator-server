@@ -13,18 +13,23 @@ MODEL = "google/gemini-pro"  # You can also try "mistralai/mixtral-8x7b-instruct
 def index():
     return "LLM Equation Solver API is Live!"
 
-@app.route('/test', methods=['POST'])
-def test():
-    data = request.get_json()
-    expression = data.get('expression', 'No expression received')
+latest_expression = "No input received yet"
 
-    # Simple HTML response showing the expression
+@app.route('/test', methods=['POST'])
+def test_post():
+    global latest_expression
+    data = request.get_json()
+    latest_expression = data.get('expression', 'No expression received')
+    return {"status": "received", "expression": latest_expression}
+
+@app.route('/test', methods=['GET'])
+def test_get():
     return render_template_string(f"""
         <html>
             <head><title>ESP32 Input</title></head>
             <body>
                 <h2>Received Expression:</h2>
-                <p style='font-size:24px; color:blue;'>{expression}</p>
+                <p style='font-size:24px; color:blue;'>{latest_expression}</p>
             </body>
         </html>
     """)
