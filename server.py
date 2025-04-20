@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +12,22 @@ MODEL = "google/gemini-pro"  # You can also try "mistralai/mixtral-8x7b-instruct
 @app.route("/")
 def index():
     return "LLM Equation Solver API is Live!"
+
+@app.route('/test', methods=['POST'])
+def test():
+    data = request.get_json()
+    expression = data.get('expression', 'No expression received')
+
+    # Simple HTML response showing the expression
+    return render_template_string(f"""
+        <html>
+            <head><title>ESP32 Input</title></head>
+            <body>
+                <h2>Received Expression:</h2>
+                <p style='font-size:24px; color:blue;'>{expression}</p>
+            </body>
+        </html>
+    """)
 
 @app.route('/solve', methods=['POST'])
 def solve_equation():
