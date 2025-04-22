@@ -38,16 +38,24 @@ def solve_equation():
     user_equation = data.get('equation', '')
 
     prompt = f"""
-You are a step-by-step math solver. Your task is to solve engineering-level math equations by showing only the working steps required to reach the final answer.
+Solve the following nonlinear PDE using the method of variation of parameters:
 
-- Do not include explanations or final answers.
-- Break every step into small parts and write one operation per line.
-- Do not skip algebraic simplifications or rearrangements.
-- Do not include the word "Answer" or "= Final Result".
-- The format should look like a chalkboard or exam working.
-- Use plain text with one step per line.
+ {user_equation}
 
-Now solve: {user_equation}
+Where:
+- p = ∂z/∂x
+- q = ∂z/∂y
+
+Please format the solution with the following steps:
+1. Clearly restate the PDE and define variables.
+2. Justify the use of variation of parameters and explain the chosen substitution (e.g., let z(x, y) = f(x + λy)).
+3. Show all derivative substitutions (e.g., compute ∂z/∂x and ∂z/∂y from the substitution).
+4. Substitute into the PDE and simplify logically step-by-step.
+5. Solve the resulting ODE using proper separation of variables or substitution, showing all work.
+6. Box or highlight the final expression for z(x, y).
+7. Optionally include a check that the final solution satisfies the original PDE.
+
+Present all working clearly, with math formatting and structured reasoning suitable for a 5-mark university-level answer.
 """
 
     headers = {"Content-Type": "application/json"}
